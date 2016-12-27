@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1482787734 source:d:\facultate\anul1.1\ip\proiect\-minesweeper-\scoruri\main.cpp
+	<iostream>
+	<fstream>
+	<string>
+
