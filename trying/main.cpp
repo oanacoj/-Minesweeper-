@@ -18,6 +18,38 @@ int random(int i, int b)
            return ran;
 }
 
+void reveal(int x)
+{
+    if(x == 0)
+        cout << "o|";
+    else if(x == 9)
+        cout << "x|";
+    else
+        cout << x << "|";
+}
+
+void replay()
+{
+    char a;
+    cout << "1) Replay 2) Quit" << endl;
+    cin >> a;
+    switch(a)
+        {
+            case '1':
+                main();
+                break;
+            case '2':
+                cout << "Quit" << endl;
+                break;
+            default:
+                cout << "Invalid input" << endl;
+                replay();
+                break;
+        }
+}
+
+
+
 int main()
 {
     int a;
