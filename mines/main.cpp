@@ -7,9 +7,10 @@ using namespace std;
 
 int matrix (unsigned int n,unsigned int nrBombe,int mapa[][])
 {
-    for(int i=0; i<n; i++)
+    unsigned int i, j;
+    for( i=0; i<n; i++)
     {
-        for(j=0; j<n; j++)
+        for( j=0; j<n; j++)
             mapa[i][j]=0;
     }
     int bombeAdd=0;
@@ -65,7 +66,7 @@ int matrix (unsigned int n,unsigned int nrBombe,int mapa[][])
     }
 }
 
-int fcSelect(unsigned int i,unsigned int j,int mapa[][],int cover[][])
+int fcSelect(unsigned int i,unsigned int j,unsigned int n, int mapa[][],int cover[][])
 {
     if(mapa[i][j]== -1)
         return -1;
@@ -94,7 +95,7 @@ int fcSelect(unsigned int i,unsigned int j,int mapa[][],int cover[][])
 
 
 
-int selectC(unsigned int i,unsigned int j,int mapa[][],int cover[][])
+int selectC(unsigned int i,unsigned int j,unsigned int n, int mapa[][],int cover[][])
 {
     if(mapa[i][j]==-1)
         return -1;
@@ -120,8 +121,9 @@ int selectC(unsigned int i,unsigned int j,int mapa[][],int cover[][])
 
 
 
-void afisare(int mapa[][],int cover[][])
+void afisare(unsigned int n, int mapa[][],int cover[][])
 {
+    unsigned int i, j;
     for(i=0; i<n; i++)
     {
         for(j=0; j<n; j++)
@@ -139,6 +141,7 @@ void afisare(int mapa[][],int cover[][])
 
 int getScor(int cover[][],int n)
 {
+    unsigned int i, j;
     int scor=0;
     for(i=0; i<n; i++)
     {

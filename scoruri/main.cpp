@@ -47,9 +47,30 @@ void afiseazaListaSimpla(nodScor* L)
 	cout << "\n";
 }
 
-
+int scriere (nodScor*&L)
+{
+    ofstream myfile;
+    myfile.open ("D:/facultate/anul1.1/ip/proiect/-Minesweeper-/scoruri/tabelScor.txt");
+    if( !myfile )
+        cerr << "Cant open " << endl;
+    while( L->next != NULL )
+    {
+        myfile<< L->nume <<endl;
+        myfile<< L->scor<<endl;
+        L=L->next;
+    }
+    myfile.close();
+    return 0;
+}
 
 int main()
+{
+
+    scriere(nodScor*&L);
+}
+
+
+/*int main()
 {
 	nodScor* primulNod;
 	citesteListaSimpla(primulNod);
@@ -58,7 +79,7 @@ int main()
 
 	cin >> n;
 	return 0;
-}
+}*/
 /*int main()
 {
     ifstream file( "D:/facultate/anul1.1/ip/proiect/-Minesweeper-/scoruri/tabelScor.txt", ios::in );
