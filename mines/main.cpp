@@ -5,19 +5,19 @@
 using namespace std;
 
 
-int matrix (unsigned int nrBombe,int mapa[10][10])
+int matrix (unsigned int n,unsigned int nrBombe,int mapa[][])
 {
     unsigned int i, j;
-    for( i=0; i<10; i++)
+    for( i=0; i<n; i++)
     {
-        for( j=0; j<10; j++)
+        for( j=0; j<n; j++)
             mapa[i][j]=0;
     }
     int bombeAdd=0;
     while(bombeAdd<nrBombe)
     {
-        i=random(0, 10);
-        j=random(0,10);
+        i=random(0, n);
+        j=random(0,n);
         if(mapa[i][j]==0)
         {
             mapa[i][j]=-1;
@@ -33,12 +33,12 @@ int matrix (unsigned int nrBombe,int mapa[10][10])
             if(mapa[i][j-1]>=0)
                 mapa[i][j-1]++;
         }
-        if(i<9)
+        if(i<n-1)
         {
             if(mapa[i+1][j]>=0)
                 mapa[i+1][j]++;
         }
-        if(j<9)
+        if(j<n-1)
         {
             if(mapa[i][j+1]>=0)
                 mapa[i][j+1]++;
@@ -48,17 +48,17 @@ int matrix (unsigned int nrBombe,int mapa[10][10])
                 if(mapa[i-1][j-1]>=0)
                     mapa[i-1][j-1]++;
             }
-        if(i>0 && j<9)
+        if(i>0 && j<n-1)
             {
                 if(mapa[i-1][j+1]>=0)
                     mapa[i-1][j+1]++;
             }
-        if(i<9 && j>0)
+        if(i<n-1 && j>0)
         {
             if(mapa[i+1][j-1]>=0)
                 mapa[i+1][j-1]++;
         }
-        if(i<9 && j<9)
+        if(i<n-1 && j<n-1)
         {
             if(mapa[i+1][j+1]>=0)
                 mapa[i+1][j+1]++;
@@ -66,7 +66,7 @@ int matrix (unsigned int nrBombe,int mapa[10][10])
     }
 }
 
-int fcSelect(unsigned int i,unsigned int j, int mapa[10][10],int cover[10][10])
+int fcSelect(unsigned int i,unsigned int j,unsigned int n, int mapa[][],int cover[][])
 {
     if(mapa[i][j]== -1)
         return -1;
@@ -80,12 +80,12 @@ int fcSelect(unsigned int i,unsigned int j, int mapa[10][10],int cover[10][10])
         if(mapa[i][j-1] != -1)
             cover[i][j-1] = 1;
     }
-    if(i<9)
+    if(i<n-1)
     {
         if(mapa[i+1][j] != -1)
             cover[i+1][j]=1;
     }
-    if(j<9)
+    if(j<n-1)
     {
         if(mapa[i][j+1] != -1)
             cover[i][j+1]=1;
@@ -95,7 +95,7 @@ int fcSelect(unsigned int i,unsigned int j, int mapa[10][10],int cover[10][10])
 
 
 
-int selectC(unsigned int i,unsigned int j, int mapa[10][10],int cover[10][10])
+int selectC(unsigned int i,unsigned int j,unsigned int n, int mapa[][],int cover[][])
 {
     if(mapa[i][j]==-1)
         return -1;
@@ -111,22 +111,22 @@ int selectC(unsigned int i,unsigned int j, int mapa[10][10],int cover[10][10])
             selectC(i-1, j, mapa, cover);
         if(j>0 && cover[i][j-1] != 1 && mapa[i][j-1]!= -1)
             selectC(i, j-1, mapa, cover);
-        if(i<9 && cover[i+1][j] != 1 && mapa[i+1][j]!=-1)
+        if(i<n-1 && cover[i+1][j] != 1 && mapa[i+1][j]!=-1)
             selectC(i+1, j, mapa, cover);
-        if(j<9 && cover[i][j+1]!=1 && mapa[i][j+1]!=-1)
+        if(j<n-1 && cover[i][j+1]!=1 && mapa[i][j+1]!=-1)
             selectC(i, j+1, mapa, cover);
     }
-    return cover[10][10];
+    return cover[][];
 }
 
 
 
-void afisare(int mapa[10][10],int cover[10][10])
+void afisare(unsigned int n, int mapa[][],int cover[][])
 {
     unsigned int i, j;
-    for(i=0; i<10; i++)
+    for(i=0; i<n; i++)
     {
-        for(j=0; j<10; j++)
+        for(j=0; j<n; j++)
             if(cover[i][j]==1)
         {
             cout<<mapa[i][j];
@@ -139,13 +139,13 @@ void afisare(int mapa[10][10],int cover[10][10])
 
 
 
-int getScor(int cover[10][10])
+int getScor(int cover[][],int n)
 {
     unsigned int i, j;
     int scor=0;
-    for(i=0; i<10; i++)
+    for(i=0; i<n; i++)
     {
-        for(j=0; j<10; j++)
+        for(j=0; j<n; j++)
             if(cover[i][j]==1)
             scor++;
     }
@@ -156,7 +156,7 @@ int getScor(int cover[10][10])
 int main
 {
     int mapa[][];
-    mapa=matrix(n, nrBombe, mapa[10][10]);
+    mapa=matrix(n, nrBombe, mapa[][]);
     int alive=1;
     while(alive)
     {
