@@ -1,0 +1,10 @@
+# depslib dependency file v1.0
+1484311860 source:d:\facultate\anul1.1\ip\proiect\-minesweeper-\minesweeper\minesweepe\main.cpp
+	<iostream>
+	<time.h>
+	<stdlib.h>
+	<Windows.h>
+	<iostream>
+	<fstream>
+	<string>
+
