@@ -4,20 +4,20 @@
 
 using namespace std;
 
-int matrix (unsigned int nrBombe,int mapa[10][10])
+int matrix (unsigned int nrBombe,int mapa[10][10], int n)
 {
     srand(time(NULL));
     unsigned int i, j;
-    for( i=0; i<10; i++)
+    for( i=0; i<n; i++)
     {
-        for( j=0; j<10; j++)
+        for( j=0; j<n; j++)
             mapa[i][j]=0;
     }
-    int bombeAdd=0;
+    unsigned int bombeAdd=0;
     while(bombeAdd<nrBombe)
     {
-        i=rand() % 10;
-        j=rand() % 10;
+        i=rand() % n;
+        j=rand() % n;
         if(mapa[i][j] != -1)
         {
             mapa[i][j]=-1;
@@ -67,7 +67,7 @@ int matrix (unsigned int nrBombe,int mapa[10][10])
     return mapa[10][10];
 }
 
-int fcSelect(unsigned int i,unsigned int j, int mapa[10][10],int cover[10][10])
+int fcSelect(unsigned int i,unsigned int j, int mapa[10][10],int cover[10][10], int n)
 {
     if(mapa[i][j]== -1)
         return -1;
@@ -96,7 +96,7 @@ int fcSelect(unsigned int i,unsigned int j, int mapa[10][10],int cover[10][10])
 
 
 
-int selectC(unsigned int i,unsigned int j, int mapa[10][10],int cover[10][10])
+int selectC(unsigned int i,unsigned int j, int mapa[10][10],int cover[10][10], int n)
 {
     if(mapa[i][j]==-1)
         return -1;
@@ -109,44 +109,25 @@ int selectC(unsigned int i,unsigned int j, int mapa[10][10],int cover[10][10])
     {
         cover[i][j]=1;
         if(i>0 && cover[i-1][j] != 1 && mapa[i-1][j]!=-1)
-            selectC(i-1, j, mapa, cover);
+            selectC(i-1, j, mapa, cover, n);
         if(j>0 && cover[i][j-1] != 1 && mapa[i][j-1]!= -1)
-            selectC(i, j-1, mapa, cover);
+            selectC(i, j-1, mapa, cover, n);
         if(i<9 && cover[i+1][j] != 1 && mapa[i+1][j]!=-1)
-            selectC(i+1, j, mapa, cover);
+            selectC(i+1, j, mapa, cover, n);
         if(j<9 && cover[i][j+1]!=1 && mapa[i][j+1]!=-1)
-            selectC(i, j+1, mapa, cover);
+            selectC(i, j+1, mapa, cover, n);
     }
     return cover[10][10];
 }
-
-
-
-void afisare(int mapa[10][10],int cover[10][10])
-{
-    unsigned int i, j;
-    for(i=0; i<10; i++)
-    {
-        for(j=0; j<10; j++)
-            if(cover[i][j]==1)
-        {
-            cout<<mapa[i][j];
-        }
-            else
-                cout<<"| |";
-            cout<<endl;
-    }
-}
-
 
 
 int getScor(int cover[10][10],int n)
 {
     unsigned int i, j;
     int scor=0;
-    for(i=0; i<10; i++)
+    for(i=0; i<n; i++)
     {
-        for(j=0; j<10; j++)
+        for(j=0; j<n; j++)
             if(cover[i][j]==1)
             scor++;
     }
@@ -154,18 +135,56 @@ int getScor(int cover[10][10],int n)
 }
 
 
+void afisare(int mapa[10][10],int cover[10][10], int n)
+{
+    unsigned int i, j;
+    for(i=0; i<n; i++)
+    {
+
+
+        if(i==0){
+            cout<<"_|";
+            for(j=0;j<n;j++)
+                cout<<j<<"|";
+            cout<<endl<<endl;;
+        }
+        cout<<i<< " "   ;
+        for(j=0; j<n; j++)
+            if(cover[i][j]==1)
+            {
+                    if(mapa[i][j]==-1)
+                        cout<<"*|";
+                    else{
+                        cout<<mapa[i][j]<<"|";
+                    }
+            }
+            else{
+                cout<<"?|";
+            }
+        cout<<endl;
+    }
+    cout<<endl<<"socurul tau este: "<<getScor(cover, n)<<endl;
+}
+
+
+
+
+
+
 int main ()
 {
     int cover[10][10], mapa[10][10];
-    unsigned int n;
+    unsigned int n, nrBombe;
     cout << "dati nr bombe:";
-    cin >> n;
-    matrix(n, mapa);
+    cin >> nrBombe;
+    cout<<"Dati n";
+    cin>>n;
+    matrix(nrBombe, mapa, n);
     int alive=1;
     int i, j, x, scor;
-    while(alive)
+    while(alive==1)
     {
-        afisare(mapa, cover);
+        afisare(mapa, cover, n);
         do
         {
             cout<<"i=";
@@ -173,11 +192,22 @@ int main ()
             cout<<"j=";
             cin>>j;
         }
-        while(i<0 || i>10 || j<0 || j>10);
-        x=selectC(i, j, mapa, cover);
+        while(i<0 || i>n || j<0 || j>n);
+        x=selectC(i, j, mapa, cover, n);
         if(x==-1)
             alive=0;
+        scor=getScor(cover, n);
+        if(scor>=n*n-nrBombe){
+            alive = 2;
+        }
     }
-    scor=getScor(cover, 10);
-    cout<<scor;
+    for(i=0;i<n;i++)
+        for(j=0;j<n;j++)
+            cover[i][j] = 1;
+    scor=getScor(cover, n);
+    afisare(mapa,cover, n);
+    if(alive==0)
+        cout<<"Ai murit";
+    else
+        cout<<"Ai castigat";
 }
