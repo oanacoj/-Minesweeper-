@@ -55,13 +55,14 @@ int scriereScor (nodScor*&L)
 {
     ofstream myfile;
     myfile.open ("scoruri.txt");
+    nodScor * p = L;
     if( !myfile )
         cerr << "Cant open " << endl;
-    while( L != NULL )
+    while( p != NULL )
     {
-        myfile<< L->nume <<endl;
-        myfile<< L->scor<<endl;
-        L=L->next;
+        myfile<< p->nume <<endl;
+        myfile<< p->scor<<endl;
+        p=p->next;
     }
     myfile.close();
     return 0;
@@ -170,7 +171,7 @@ int selectC(unsigned int i,unsigned int j, int mapa[10][10],int cover[10][10], i
         cover[i][j]=1;
         return 1;
     }
-    else
+    if(mapa[i][j] == 0)
     {
         cover[i][j]=1;
         if(i>0 && cover[i-1][j] != 1 && mapa[i-1][j]!=-1)
@@ -182,7 +183,7 @@ int selectC(unsigned int i,unsigned int j, int mapa[10][10],int cover[10][10], i
         if(j<9 && cover[i][j+1]!=1 && mapa[i][j+1]!=-1)
             selectC(i, j+1, mapa, cover, n);
     }
-    return cover[10][10];
+    return 1;
 }
 
 
@@ -194,7 +195,7 @@ int getScor(int cover[10][10],int n)
     {
         for(j=0; j<n; j++)
             if(cover[i][j]==1)
-            scor++;
+                scor++;
     }
     return scor;
 }
@@ -267,9 +268,6 @@ void afisare(int mapa[10][10],int cover[10][10], int n)
         cout<<endl;
     }
 
-
-    SetConsoleTextAttribute(hConsole, 10);
-    cout<<endl<<"socurul tau este: "<<getScor(cover, n)<<endl;
 }
 
 
@@ -286,7 +284,7 @@ int loopJoc(){
 
     matrix(nrBombe, mapa, n);
     int alive=1;
-    int i, j, x, scor;
+    int i, j, x, scor=0;
     while(alive==1)
     {
         afisare(mapa, cover, n);
@@ -298,24 +296,30 @@ int loopJoc(){
             cin>>j;
         }
         while(i<0 || i>=n || j<0 || j>=n);
+
         x=selectC(i, j, mapa, cover, n);
         if(x==-1){
             alive=0;
         }
-        scor=getScor(cover, n);
-        if(alive==1 && scor>=n*n-nrBombe){
-            alive = 2;
+        else{
+            scor=getScor(cover, n );
+            if(alive==1 && scor>=n*n-nrBombe){
+                alive = 2;
+                scor=getScor(cover, n);
+            }
         }
     }
     for(i=0;i<n;i++)
         for(j=0;j<n;j++)
             cover[i][j] = 1;
-    scor=getScor(cover, n);
     afisare(mapa,cover, n);
     if(alive==0)
         cout<<"Ai murit";
     if(alive==2)
         cout<<"Ai castigat";
+
+
+    cout<<endl<<"socurul tau este: "<<scor<<endl;
     return scor;
 }
 
@@ -345,8 +349,8 @@ int main ()
             string nume;
             cin>>nume;
             addScor(primulNod, nume, scor);
-            afiseazaListaSimpla(primulNod);
             scriereScor(primulNod);
+            afiseazaListaSimpla(primulNod);
         }
         if (optineSelectata==2){
             citesteListaSimpla(primulNod);
