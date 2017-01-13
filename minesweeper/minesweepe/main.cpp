@@ -26,13 +26,14 @@ void addScor(nodScor*& L, string numeUser, int scorUser)
 	L = p;
 }
 
-void citesteListaSimpla(nodScor*&L) {
+void citesteListaSimpla(nodScor*&L)
+{
 	ifstream file( "scoruri.txt", ios::in );
     string part1;
     L = NULL;
     int num2;
     if( !file )
-        cerr << "Cant open " << endl;
+        cerr << "Can't open " << endl;
 
     while( file >> part1 >> num2 )
     {
@@ -70,7 +71,7 @@ int scriereScor (nodScor*&L)
 }
 
 
-void matrix (unsigned int nrBombe,int mapa[MAX_N][MAX_N], int n)
+void matrix (unsigned int nrBombe,int mapa[MAX_N][MAX_N],unsigned int n)
 {
     srand(time(NULL));
     unsigned int i, j;
@@ -99,12 +100,12 @@ void matrix (unsigned int nrBombe,int mapa[MAX_N][MAX_N], int n)
                 if(mapa[i][j-1]>=0)
                     mapa[i][j-1]++;
             }
-            if(i<9)
+            if(i<n-1)
             {
                 if(mapa[i+1][j]>=0)
                     mapa[i+1][j]++;
             }
-            if(j<9)
+            if(j<n-1)
             {
                 if(mapa[i][j+1]>=0)
                     mapa[i][j+1]++;
@@ -114,17 +115,17 @@ void matrix (unsigned int nrBombe,int mapa[MAX_N][MAX_N], int n)
                     if(mapa[i-1][j-1]>=0)
                         mapa[i-1][j-1]++;
                 }
-            if(i>0 && j<9)
+            if(i>0 && j<n-1)
                 {
                     if(mapa[i-1][j+1]>=0)
                         mapa[i-1][j+1]++;
                 }
-            if(i<9 && j>0)
+            if(i<n-1 && j>0)
             {
                 if(mapa[i+1][j-1]>=0)
                     mapa[i+1][j-1]++;
             }
-            if(i<9 && j<9)
+            if(i<n-1 && j<n-1)
             {
                 if(mapa[i+1][j+1]>=0)
                     mapa[i+1][j+1]++;
@@ -133,7 +134,7 @@ void matrix (unsigned int nrBombe,int mapa[MAX_N][MAX_N], int n)
     }
 }
 
-int fcSelect(unsigned int i,unsigned int j, int mapa[MAX_N][MAX_N],int cover[MAX_N][MAX_N], int n)
+int fcSelect(unsigned int i,unsigned int j, int mapa[MAX_N][MAX_N],int cover[MAX_N][MAX_N],unsigned int n)
 {
     if(mapa[i][j]== -1)
         return -1;
@@ -187,7 +188,7 @@ int selectC(unsigned int i,unsigned int j, int mapa[MAX_N][MAX_N],int cover[MAX_
 }
 
 
-int getScor(int cover[MAX_N][MAX_N],int n)
+int getScor(int cover[MAX_N][MAX_N],unsigned int n)
 {
     unsigned int i, j;
     int scor=0;
@@ -201,8 +202,7 @@ int getScor(int cover[MAX_N][MAX_N],int n)
 }
 
 
-unsigned char GetColorCode ( unsigned char colorBackground,
-                             unsigned char colorForeground )
+unsigned char GetColorCode ( unsigned char colorBackground, unsigned char colorForeground )
 {
     //0 negru, 4 rosu inchis, 8 gri, 9 albastru, 12 rosu, 14 galben, 15 alb
       //return most signifigant bit of colorBackground and
@@ -210,7 +210,7 @@ unsigned char GetColorCode ( unsigned char colorBackground,
       return (colorBackground << 4) + colorForeground;
 }
 
-void afisare(int mapa[MAX_N][MAX_N],int cover[MAX_N][MAX_N], int n)
+void afisare(int mapa[MAX_N][MAX_N],int cover[MAX_N][MAX_N],unsigned int n)
 {
     system("cls");
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -273,19 +273,23 @@ void afisare(int mapa[MAX_N][MAX_N],int cover[MAX_N][MAX_N], int n)
 
 
 
-int loopJoc(){
+int loopJoc()
+{
     int cover[MAX_N][MAX_N]={0}, mapa[MAX_N][MAX_N];
     unsigned int n, nrBombe;
     cout << "Dati nr bombe  : ";
     cin >> nrBombe;
-    do{
+    do
+    {
         cout<<"Dati n(maximum: "<<MAX_N<<"): ";
         cin>>n;
-    }while(n*n<=nrBombe || n >= MAX_N);
+    }
+    while(n*n<=nrBombe || n >= MAX_N);
 
     matrix(nrBombe, mapa, n);
-    int alive=1;
-    int i, j, x, scor=0;
+    unsigned int alive=1;
+    unsigned int i, j, scor=0;
+    int x;
     while(alive==1)
     {
         afisare(mapa, cover, n);
@@ -299,12 +303,15 @@ int loopJoc(){
         while(i<0 || i>=n || j<0 || j>=n);
 
         x=selectC(i, j, mapa, cover, n);
-        if(x==-1){
+        if(x==-1)
+        {
             alive=0;
         }
-        else{
+        else
+        {
             scor=getScor(cover, n );
-            if(alive==1 && scor>=n*n-nrBombe){
+            if(alive==1 && scor>=n*n-nrBombe)
+            {
                 alive = 2;
                 scor=getScor(cover, n);
             }
@@ -319,7 +326,6 @@ int loopJoc(){
     if(alive==2)
         cout<<"Ai castigat";
 
-
     cout<<endl<<"socurul tau este: "<<scor<<endl;
     return scor;
 }
@@ -331,20 +337,24 @@ int main ()
 	citesteListaSimpla(primulNod);
 
     int scor = 0;
-    while(1){
+    while(1)
+    {
         int optineSelectata = 0;
         HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
         SetConsoleTextAttribute(hConsole, GetColorCode(0, 15));
-        do{
+        do
+        {
             cout<<"1. Joc nou"<<endl;
             cout<<"2. Top scoruri"<<endl;
             cout<<"0. Exit"<<endl;
             cin>>optineSelectata;
-        } while(optineSelectata<0 || optineSelectata > 2);
+        }
+        while(optineSelectata<0 || optineSelectata > 2);
 
         system("cls");
 
-        if(optineSelectata == 1){
+        if(optineSelectata == 1)
+        {
             scor = loopJoc();
             cout<<endl<<"Dati numele: ";
             string nume;
@@ -353,7 +363,8 @@ int main ()
             scriereScor(primulNod);
             afiseazaListaSimpla(primulNod);
         }
-        if (optineSelectata==2){
+        if (optineSelectata==2)
+        {
             citesteListaSimpla(primulNod);
             afiseazaListaSimpla(primulNod);
         }
