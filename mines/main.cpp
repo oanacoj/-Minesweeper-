@@ -1,8 +1,72 @@
 #include <iostream>
 #include <time.h>
 #include <stdlib.h>
+#include <Windows.h>
+#include <iostream>
+#include <fstream>
+#include <string>
 
 using namespace std;
+
+struct nodScor
+{
+	string nume;
+	int scor;
+	nodScor* next;
+};
+
+
+void addScor(nodScor*& L, string numeUser, int scorUser)
+{
+	nodScor * p = new nodScor;
+	p->nume = numeUser;
+	p->scor = scorUser;
+	p->next = L;
+	L = p;
+}
+
+void citesteListaSimpla(nodScor*&L) {
+	ifstream file( "scoruri.txt", ios::in );
+    string part1;
+    L = NULL;
+    int num2;
+    if( !file )
+        cerr << "Cant open " << endl;
+
+    while( file >> part1 >> num2 )
+    {
+        addScor(L, part1, num2);
+    }
+
+    file.close();
+}
+
+void afiseazaListaSimpla(nodScor* L)
+{
+	nodScor * p = L;
+	while (p != NULL ) {
+		cout << p->nume << ": " << p->scor << endl;
+		p = p->next;
+	}
+	cout << "\n";
+}
+
+int scriereScor (nodScor*&L)
+{
+    ofstream myfile;
+    myfile.open ("scoruri.txt");
+    if( !myfile )
+        cerr << "Cant open " << endl;
+    while( L != NULL )
+    {
+        myfile<< L->nume <<endl;
+        myfile<< L->scor<<endl;
+        L=L->next;
+    }
+    myfile.close();
+    return 0;
+}
+
 
 int matrix (unsigned int nrBombe,int mapa[10][10], int n)
 {
@@ -22,46 +86,47 @@ int matrix (unsigned int nrBombe,int mapa[10][10], int n)
         {
             mapa[i][j]=-1;
             bombeAdd++;
-        }
-        if(i>0)
-        {
-            if(mapa[i-1][j]>=0)
-                mapa[i-1][j]++;
-        }
-        if(j>0)
-        {
-            if(mapa[i][j-1]>=0)
-                mapa[i][j-1]++;
-        }
-        if(i<9)
-        {
-            if(mapa[i+1][j]>=0)
-                mapa[i+1][j]++;
-        }
-        if(j<9)
-        {
-            if(mapa[i][j+1]>=0)
-                mapa[i][j+1]++;
-        }
-        if(i>0 && j>0)
+
+            if(i>0)
             {
-                if(mapa[i-1][j-1]>=0)
-                    mapa[i-1][j-1]++;
+                if(mapa[i-1][j]>=0)
+                    mapa[i-1][j]++;
             }
-        if(i>0 && j<9)
+            if(j>0)
             {
-                if(mapa[i-1][j+1]>=0)
-                    mapa[i-1][j+1]++;
+                if(mapa[i][j-1]>=0)
+                    mapa[i][j-1]++;
             }
-        if(i<9 && j>0)
-        {
-            if(mapa[i+1][j-1]>=0)
-                mapa[i+1][j-1]++;
-        }
-        if(i<9 && j<9)
-        {
-            if(mapa[i+1][j+1]>=0)
-                mapa[i+1][j+1]++;
+            if(i<9)
+            {
+                if(mapa[i+1][j]>=0)
+                    mapa[i+1][j]++;
+            }
+            if(j<9)
+            {
+                if(mapa[i][j+1]>=0)
+                    mapa[i][j+1]++;
+            }
+            if(i>0 && j>0)
+                {
+                    if(mapa[i-1][j-1]>=0)
+                        mapa[i-1][j-1]++;
+                }
+            if(i>0 && j<9)
+                {
+                    if(mapa[i-1][j+1]>=0)
+                        mapa[i-1][j+1]++;
+                }
+            if(i<9 && j>0)
+            {
+                if(mapa[i+1][j-1]>=0)
+                    mapa[i+1][j-1]++;
+            }
+            if(i<9 && j<9)
+            {
+                if(mapa[i+1][j+1]>=0)
+                    mapa[i+1][j+1]++;
+            }
         }
     }
     return mapa[10][10];
@@ -135,50 +200,90 @@ int getScor(int cover[10][10],int n)
 }
 
 
+unsigned char GetColorCode ( unsigned char colorBackground,
+                             unsigned char colorForeground )
+{
+    //0 negru, 4 rosu inchis, 8 gri, 9 albastru, 12 rosu, 14 galben, 15 alb
+      //return most signifigant bit of colorBackground and
+      //least signifigant bit of colorForground as one byte
+      return (colorBackground << 4) + colorForeground;
+}
+
 void afisare(int mapa[10][10],int cover[10][10], int n)
 {
+    system("cls");
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hConsole, 2);
     unsigned int i, j;
     for(i=0; i<n; i++)
     {
 
-
+        SetConsoleTextAttribute(hConsole, GetColorCode(15, 0));
         if(i==0){
             cout<<"_|";
             for(j=0;j<n;j++)
                 cout<<j<<"|";
-            cout<<endl<<endl;;
+            cout<<endl;
         }
         cout<<i<< " "   ;
         for(j=0; j<n; j++)
             if(cover[i][j]==1)
             {
-                    if(mapa[i][j]==-1)
-                        cout<<"*|";
+                    if(mapa[i][j]==-1){
+                        SetConsoleTextAttribute(hConsole, GetColorCode(12, 14));
+                        cout<<"*";
+                        SetConsoleTextAttribute(hConsole, GetColorCode(8, 15));
+                        cout<<"|";
+                    }
                     else{
-                        cout<<mapa[i][j]<<"|";
+                        if(mapa[i][j]==0){
+                            SetConsoleTextAttribute(hConsole, GetColorCode(8, 0));
+                            cout<<" ";
+                            SetConsoleTextAttribute(hConsole, GetColorCode(8, 15));
+                            cout<<"|";
+                        }
+                        else{
+                            if(mapa[i][j]==1){
+                                SetConsoleTextAttribute(hConsole, GetColorCode(8, 9));
+                            }
+                            if(mapa[i][j]==2){
+                                SetConsoleTextAttribute(hConsole, GetColorCode(8, 14));
+                            }
+                            if(mapa[i][j]>2){
+                                SetConsoleTextAttribute(hConsole, GetColorCode(8, 4));
+                            }
+                            cout<<mapa[i][j];
+                            SetConsoleTextAttribute(hConsole, GetColorCode(8, 15));
+                            cout<<"|";
+                        }
+
                     }
             }
             else{
+                SetConsoleTextAttribute(hConsole, GetColorCode(8, 15));
                 cout<<"?|";
             }
+        SetConsoleTextAttribute(hConsole, GetColorCode(0, 15));
         cout<<endl;
     }
+
+
+    SetConsoleTextAttribute(hConsole, 10);
     cout<<endl<<"socurul tau este: "<<getScor(cover, n)<<endl;
 }
 
 
 
-
-
-
-int main ()
-{
-    int cover[10][10], mapa[10][10];
+int loopJoc(){
+    int cover[10][10]={0}, mapa[10][10];
     unsigned int n, nrBombe;
-    cout << "dati nr bombe:";
+    cout << "Dati nr bombe  : ";
     cin >> nrBombe;
-    cout<<"Dati n";
-    cin>>n;
+    do{
+        cout<<"Dati n: ";
+        cin>>n;
+    }while(n*n<=nrBombe);
+
     matrix(nrBombe, mapa, n);
     int alive=1;
     int i, j, x, scor;
@@ -192,12 +297,13 @@ int main ()
             cout<<"j=";
             cin>>j;
         }
-        while(i<0 || i>n || j<0 || j>n);
+        while(i<0 || i>=n || j<0 || j>=n);
         x=selectC(i, j, mapa, cover, n);
-        if(x==-1)
+        if(x==-1){
             alive=0;
+        }
         scor=getScor(cover, n);
-        if(scor>=n*n-nrBombe){
+        if(alive==1 && scor>=n*n-nrBombe){
             alive = 2;
         }
     }
@@ -208,6 +314,49 @@ int main ()
     afisare(mapa,cover, n);
     if(alive==0)
         cout<<"Ai murit";
-    else
+    if(alive==2)
         cout<<"Ai castigat";
+    return scor;
+}
+
+
+int main ()
+{
+    nodScor* primulNod;
+	citesteListaSimpla(primulNod);
+
+    int scor = 0;
+    while(1){
+        int optineSelectata = 0;
+        HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+        SetConsoleTextAttribute(hConsole, GetColorCode(0, 15));
+        do{
+            cout<<"1. Joc nou"<<endl;
+            cout<<"2. Top scoruri"<<endl;
+            cout<<"0. Exit"<<endl;
+            cin>>optineSelectata;
+        } while(optineSelectata<0 || optineSelectata > 2);
+
+        system("cls");
+
+        if(optineSelectata == 1){
+            scor = loopJoc();
+            cout<<endl<<"Dati numele: ";
+            string nume;
+            cin>>nume;
+            addScor(primulNod, nume, scor);
+            afiseazaListaSimpla(primulNod);
+            scriereScor(primulNod);
+        }
+        if (optineSelectata==2){
+            citesteListaSimpla(primulNod);
+            afiseazaListaSimpla(primulNod);
+        }
+        if(optineSelectata == 0){
+            return 0;
+        }
+        optineSelectata = 0;
+
+    }
+
 }
