@@ -7,6 +7,7 @@
 #include <string>
 
 using namespace std;
+const int MAX_N = 35;
 
 struct nodScor
 {
@@ -69,7 +70,7 @@ int scriereScor (nodScor*&L)
 }
 
 
-int matrix (unsigned int nrBombe,int mapa[10][10], int n)
+void matrix (unsigned int nrBombe,int mapa[MAX_N][MAX_N], int n)
 {
     srand(time(NULL));
     unsigned int i, j;
@@ -130,10 +131,9 @@ int matrix (unsigned int nrBombe,int mapa[10][10], int n)
             }
         }
     }
-    return mapa[10][10];
 }
 
-int fcSelect(unsigned int i,unsigned int j, int mapa[10][10],int cover[10][10], int n)
+int fcSelect(unsigned int i,unsigned int j, int mapa[MAX_N][MAX_N],int cover[MAX_N][MAX_N], int n)
 {
     if(mapa[i][j]== -1)
         return -1;
@@ -147,22 +147,22 @@ int fcSelect(unsigned int i,unsigned int j, int mapa[10][10],int cover[10][10], 
         if(mapa[i][j-1] != -1)
             cover[i][j-1] = 1;
     }
-    if(i<9)
+    if(i<n-1)
     {
         if(mapa[i+1][j] != -1)
             cover[i+1][j]=1;
     }
-    if(j<9)
+    if(j<n-1)
     {
         if(mapa[i][j+1] != -1)
             cover[i][j+1]=1;
     }
-    return cover[10][10];
+    return 1;
 }
 
 
 
-int selectC(unsigned int i,unsigned int j, int mapa[10][10],int cover[10][10], int n)
+int selectC(unsigned int i,unsigned int j, int mapa[MAX_N][MAX_N],int cover[MAX_N][MAX_N], int n)
 {
     if(mapa[i][j]==-1)
         return -1;
@@ -187,7 +187,7 @@ int selectC(unsigned int i,unsigned int j, int mapa[10][10],int cover[10][10], i
 }
 
 
-int getScor(int cover[10][10],int n)
+int getScor(int cover[MAX_N][MAX_N],int n)
 {
     unsigned int i, j;
     int scor=0;
@@ -210,7 +210,7 @@ unsigned char GetColorCode ( unsigned char colorBackground,
       return (colorBackground << 4) + colorForeground;
 }
 
-void afisare(int mapa[10][10],int cover[10][10], int n)
+void afisare(int mapa[MAX_N][MAX_N],int cover[MAX_N][MAX_N], int n)
 {
     system("cls");
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -222,11 +222,12 @@ void afisare(int mapa[10][10],int cover[10][10], int n)
         SetConsoleTextAttribute(hConsole, GetColorCode(15, 0));
         if(i==0){
             cout<<"_|";
-            for(j=0;j<n;j++)
-                cout<<j<<"|";
+            for(j=0;j<n;j++){
+                    cout<<j%10<<"|";
+            }
             cout<<endl;
         }
-        cout<<i<< " "   ;
+        cout<<i%10<< " "   ;
         for(j=0; j<n; j++)
             if(cover[i][j]==1)
             {
@@ -273,14 +274,14 @@ void afisare(int mapa[10][10],int cover[10][10], int n)
 
 
 int loopJoc(){
-    int cover[10][10]={0}, mapa[10][10];
+    int cover[MAX_N][MAX_N]={0}, mapa[MAX_N][MAX_N];
     unsigned int n, nrBombe;
     cout << "Dati nr bombe  : ";
     cin >> nrBombe;
     do{
-        cout<<"Dati n: ";
+        cout<<"Dati n(maximum: "<<MAX_N<<"): ";
         cin>>n;
-    }while(n*n<=nrBombe);
+    }while(n*n<=nrBombe || n >= MAX_N);
 
     matrix(nrBombe, mapa, n);
     int alive=1;
